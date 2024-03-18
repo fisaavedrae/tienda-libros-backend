@@ -118,6 +118,48 @@ const verificarCredenciales = async (email, password) => {
   }
 };
 
+// CRUD admin
+//agregar un libro
+const agregaLibro = async (titulo, autor, genero, editorial, resenia, precio ,stock, id) => {
+  try {
+    const consulta = "INSERT INTO libros (titulo, autor, genero, editorial, resenia, precio, stock, id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)";
+    const values =[titulo, autor, genero, editorial, resenia, precio, stock, id];
+    const { rows } = await pool.query(consulta, values);
+    console.log("libro agregado");
+
+  } catch (error) {
+    console.log("No se pudo agregar libro");    
+  };
+};
+
+
+//modificar un libro
+const modificaLibro = async (titulo, autor, genero, editorial, resenia, precio, stock, id) => {
+  try {
+    const consulta = "UPDATE libros SET titulo = $1, autor = $2, genero = $3, editorial = $4, resenia = $5, precio = $6, stock = $7 WHERE id = $8";
+    const values =[titulo, autor, genero, editorial, resenia, precio, stock, id];
+    const { rows } = await pool.query(consulta, values);
+    console.log("libro modificado");
+
+  } catch (error) {
+    console.log("libro no encontrado");    
+  };
+};
+
+
+//eliminar un libro
+const borraLibro = async (id) => {
+  try {
+    const consulta ="DELETE FROM libros WHERE id = $1";
+    const values = [id];
+    await pool.query(consulta, values);
+    console.log("libro eliminado");
+
+  } catch (error) {
+    console.log("libro no encontrado");
+  };
+};
+
 module.exports = {
   readLibros,
   readLibro,
@@ -128,4 +170,7 @@ module.exports = {
   readUsuario,
   verificaSiExisteCorreo,
   verificarCredenciales,
+  agregaLibro,
+  modificaLibro,
+  borraLibro
 };
