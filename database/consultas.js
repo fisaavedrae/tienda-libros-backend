@@ -7,7 +7,7 @@ const readLibros = async () => {
     console.log(consulta);
 
     const { rows } = await pool.query(consulta);
-    console.log("Usuario encontrado con exito");
+    console.log("Libros encontrados con exito");
     return rows;
   } catch (error) {
     console.log(error);
@@ -21,7 +21,7 @@ const readLibro = async (id) => {
     //console.log(consulta)
     const values = [id];
     const { rows } = await pool.query(consulta, values);
-    console.log("Usuario encontrado con exito");
+    console.log("Libro encontrado con exito");
     return rows;
   } catch (error) {
     console.log(error);
@@ -33,7 +33,7 @@ const readAutores = async () => {
     //console.log(consulta)
 
     const { rows } = await pool.query(consulta);
-    console.log("Usuario encontrado con exito");
+    console.log("Autores encontrados con exito");
     return rows;
   } catch (error) {
     console.log(error);
@@ -44,9 +44,9 @@ const readEditoriales = async () => {
   try {
     const consulta = "select id_editorial, nombre FROM editorial";
     //console.log(consulta)
-    const values = [email];
+
     const { rows } = await pool.query(consulta);
-    console.log("Usuario encontrado con exito");
+    console.log("Editoriales encontrados con exito");
     return rows;
   } catch (error) {
     console.log(error);
@@ -57,20 +57,20 @@ const readGeneros = async () => {
   try {
     const consulta = "select id_genero, genero FROM genero";
     //console.log(consulta)
-    const values = [email];
     const { rows } = await pool.query(consulta);
-    console.log("Usuario encontrado con exito");
+    console.log("Generos encontrados con exito");
     return rows;
   } catch (error) {
     console.log(error);
   }
 };
 
-const createUsuario = async (email, password, rol, lenguaje) => {
+const createUsuario = async (nombre, email, password, direccion, ciudad) => {
   try {
     const consulta =
-      "INSERT INTO usuarios ( email, password, rol, lenguage) VALUES ($1, $2, $3, $4) RETURNING *";
-    const values = [email, password, rol, lenguaje];
+      "INSERT INTO usuarios ( nombre, email, password, direccion, ciudad, id_rol, fecha_creacion) VALUES ($1, $2, $3, $4, $5, 1, current_timestamp) RETURNING id_usuario";
+    const values = [nombre, email, password, direccion, ciudad];
+    console.log(values);
     const { rows } = await pool.query(consulta, values);
     console.log("Usuario creado con exito");
     return rows;
@@ -82,7 +82,7 @@ const createUsuario = async (email, password, rol, lenguaje) => {
 const readUsuario = async (email) => {
   try {
     const consulta =
-      "select email, password, rol, lenguage FROM usuarios WHERE email = $1";
+      "select id_usuario, nombre, email, password, direccion, ciudad FROM usuarios WHERE email = $1";
     //console.log(consulta)
     const values = [email];
     const { rows } = await pool.query(consulta, values);
