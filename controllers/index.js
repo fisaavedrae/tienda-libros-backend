@@ -12,10 +12,27 @@ const {
 
 const getLibrosController = async (req, res, next) => {
   const { data } = req;
+  const {
+    id_autor,
+    id_editorial,
+    id_genero,
+    maxPrice,
+    limits,
+    page,
+    order_by,
+  } = data;
 
   //console.log("email", email)
   try {
-    const post_query = await readLibros();
+    const post_query = await readLibros(
+      id_autor,
+      id_editorial,
+      id_genero,
+      maxPrice,
+      limits,
+      page,
+      order_by
+    );
     if (post_query != "") {
       res.status(200).json(post_query);
     } else {

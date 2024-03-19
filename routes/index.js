@@ -26,7 +26,7 @@ const {
   // getOrdenesMiddleware,
 } = require("../middlewares/index.js");
 
-router.get("/libros", getLibrosMiddleware, getLibrosController);
+router.get("/libros/filtros", getLibrosMiddleware, getLibrosController);
 router.get("/libros/:id", getLibroMiddleware, getLibroController);
 router.get("/autores", getAutoresMiddleware, getAutoresController);
 router.get("/editoriales", getEditorialesMiddleware, getEditorialesController);
