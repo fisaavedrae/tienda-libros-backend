@@ -192,6 +192,7 @@ const agregaLibro = async (titulo, resena, urlimagen, precio, stock, destacado, 
     const values =[titulo, resena, urlimagen, precio, stock, destacado, id_autor, id_editorial, id_genero];
     const { rows } = await pool.query(consulta, values);
     console.log("libro agregado");
+    
   } catch (error) {
     console.log("No se pudo agregar libro");
   }
@@ -204,9 +205,11 @@ const modificaLibro = async (titulo, resena, urlimagen, precio, stock, destacado
     const values =[titulo, resena, urlimagen, precio, stock, destacado, id_autor, id_editorial, id_genero, id];
     const { rows } = await pool.query(consulta, values);
     console.log("libro modificado");
+    console.log(rows);
+
   } catch (error) {
     console.log("libro no encontrado");
-  }
+  };
 };
 
 //eliminar un libro
@@ -216,9 +219,10 @@ const borraLibro = async (id) => {
     const values = [id];
     await pool.query(consulta, values);
     console.log("libro eliminado");
+
   } catch (error) {
     console.log("libro no encontrado");
-  }
+  };
 };
 
 //trae autor x select
@@ -226,11 +230,12 @@ const traerAutorSelect = async () => {
   try {
     const consulta = "SELECT * FROM autor";
     const { rows } = await pool.query(consulta);
-    console.log("autores encontrados");
+    console.log("autores encontrados - ok");
     return rows;
+
   } catch (error) {
     console.log(error);
-  }
+  };
 };
 
 //trae editorial x select
@@ -238,11 +243,12 @@ const traerEditorialSelect = async () => {
   try {
     const consulta = "SELECT * FROM editorial";
     const { rows } = await pool.query(consulta);
-    console.log("editoriales encontrados");
+    console.log("editoriales encontrados - ok");
     return rows;
+
   } catch (error) {
     console.log(error);
-  }
+  };
 };
 
 //trae genero x select
@@ -250,8 +256,9 @@ const traerGeneroSelect = async () => {
   try {
     const consulta = "SELECT * FROM genero";
     const { rows } = await pool.query(consulta);
-    console.log("generos encontrados");
+    console.log("generos encontrados - ok");
     return rows;
+    
   } catch (error) {
     console.log(error);
   }

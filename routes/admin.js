@@ -1,22 +1,23 @@
 const express = require("express");
-const router = express.Router();
+const router_admin = express.Router();
 
 const {
-  postLibroController,
+  //postLibroController,
   putLibroController,
   deleteLibroController,
   getDataSelectController,
 } = require("../controllers/admin.js");
+
 const {
-  postLibroMiddleware,
+  //postLibroMiddleware,
   putLibroMiddleware,
   deleteLibroMiddleware,
 } = require("../middlewares/admin.js");
 
 // CRUD admin
-router.post("/libros", postLibroMiddleware, postLibroController);
-router.put("/libros/:id", putLibroMiddleware, putLibroController);
-router.delete("/libros/:id", deleteLibroMiddleware, deleteLibroController);
-router.get("/select", getDataSelectController)
+//router_admin.post("/libros", postLibroMiddleware, postLibroController);
+router_admin.put("/libros/:id", putLibroMiddleware, putLibroController);
+router_admin.delete("/libros/:id", deleteLibroMiddleware, deleteLibroController);
+router_admin.get("/select", getDataSelectController)
 
 module.exports = router_admin;
