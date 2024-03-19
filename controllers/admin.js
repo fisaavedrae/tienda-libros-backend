@@ -4,7 +4,10 @@ const jwt = require("jsonwebtoken");
 const {
   agregaLibro,
   modificaLibro,
-  borraLibro
+  borraLibro,
+  traerAutorSelect,
+  traerEditorialSelect,
+  traerGeneroSelect
 } = require("../database/consultas");
 
 //agregar un libro
@@ -57,7 +60,7 @@ const putLibroController = async (req, res, next) => {
 const deleteLibroController = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const query = await borraLibro(id);
+    await borraLibro(id);
     res.status(200).json({
       status: "Success",
       message: "Libro eliminado"
@@ -72,11 +75,31 @@ const deleteLibroController = async (req, res, next) => {
   };
 };
 
-
+//trae data x select
+const getDataSelectController = async (req, res, next) => {
+  try {
+    const { rowsAutor } = await traerAutorSelect();
+    console.log(rowsAutor);
+    const { rowsEditorial } = await traerEditorialSelect();
+    console.log(rowsEditorial);
+    const { rowsGenero } = await traerGeneroSelect();
+    console.log(rowsGenero);
+    
+    res.status(200).json({ rowsAutor, rowsEditorial, rowsGenero });
+      
+  } catch (error) {
+    res.status(400).json({
+      status: "Bad Request",
+      message: "No se pudo obtener Data",
+    });
+    next(error);
+  };
+};
 
 
 module.exports = {
   postLibroController,
   putLibroController,
-  deleteLibroController
+  deleteLibroController,
+  getDataSelectController
 };
