@@ -200,7 +200,7 @@ const agregaLibro = async (titulo, resena, urlimagen, precio, stock, destacado, 
 //modificar un libro
 const modificaLibro = async (titulo, resena, urlimagen, precio, stock, destacado, id_autor, id_editorial, id_genero, id) => {
   try {
-    const consulta = "UPDATE libros SET titulo = $1, resena = $2, urlimagen = $3, precio = $4, stock = $5, destacado = $6, id_autor = $7, id_editorial = $8, id_genero = $9 WHERE id = $10";
+    const consulta = "UPDATE libros SET titulo = $1, resena = $2, urlimagen = $3, precio = $4, stock = $5, destacado = $6, id_autor = $7, id_editorial = $8, id_genero = $9 WHERE id_libro = $10";
     const values =[titulo, resena, urlimagen, precio, stock, destacado, id_autor, id_editorial, id_genero, id];
     const { rows } = await pool.query(consulta, values);
     console.log("libro modificado");
@@ -212,7 +212,7 @@ const modificaLibro = async (titulo, resena, urlimagen, precio, stock, destacado
 //eliminar un libro
 const borraLibro = async (id) => {
   try {
-    const consulta = "DELETE FROM libros WHERE id = $1";
+    const consulta = "DELETE FROM libros WHERE id_libro = $1";
     const values = [id];
     await pool.query(consulta, values);
     console.log("libro eliminado");
@@ -220,6 +220,43 @@ const borraLibro = async (id) => {
     console.log("libro no encontrado");
   }
 };
+
+//trae autor x select
+const traerAutorSelect = async () => {
+  try {
+    const consulta = "SELECT * FROM autor";
+    const { rows } = await pool.query(consulta);
+    console.log("autores encontrados");
+    return rows;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+//trae editorial x select
+const traerEditorialSelect = async () => {
+  try {
+    const consulta = "SELECT * FROM editorial";
+    const { rows } = await pool.query(consulta);
+    console.log("editoriales encontrados");
+    return rows;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+//trae genero x select
+const traerGeneroSelect = async () => {
+  try {
+    const consulta = "SELECT * FROM genero";
+    const { rows } = await pool.query(consulta);
+    console.log("generos encontrados");
+    return rows;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 
 module.exports = {
   readLibros,
@@ -237,4 +274,7 @@ module.exports = {
   agregaLibro,
   modificaLibro,
   borraLibro,
+  traerAutorSelect,
+  traerEditorialSelect,
+  traerGeneroSelect
 };
