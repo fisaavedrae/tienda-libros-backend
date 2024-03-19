@@ -10,7 +10,8 @@ const {
   postLibroMiddleware,
   putLibroMiddleware,
   deleteLibroMiddleware,
-} = require("../middlewares");
+} = require("../middlewares/admin.js");
+
 // CRUD admin
 router.post("/libros", postLibroMiddleware, postLibroController);
 router.put("/libros/:id", putLibroMiddleware, putLibroController);

@@ -120,10 +120,10 @@ const verificarCredenciales = async (email, password) => {
 
 // CRUD admin
 //agregar un libro
-const agregaLibro = async (titulo, autor, genero, editorial, resenia, precio ,stock, id) => {
+const agregaLibro = async (titulo, resena, urlimagen, precio, stock, destacado, id_autor, id_editorial, id_genero) => {
   try {
-    const consulta = "INSERT INTO libros (titulo, autor, genero, editorial, resenia, precio, stock, id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)";
-    const values =[titulo, autor, genero, editorial, resenia, precio, stock, id];
+    const consulta = "INSERT INTO libros (id_libro, titulo, resena, urlimagen, precio, stock, destacado, id_autor, id_editorial, id_genero) VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9)";
+    const values =[titulo, resena, urlimagen, precio, stock, destacado, id_autor, id_editorial, id_genero];
     const { rows } = await pool.query(consulta, values);
     console.log("libro agregado");
 
@@ -134,10 +134,10 @@ const agregaLibro = async (titulo, autor, genero, editorial, resenia, precio ,st
 
 
 //modificar un libro
-const modificaLibro = async (titulo, autor, genero, editorial, resenia, precio, stock, id) => {
+const modificaLibro = async (titulo, resena, urlimagen, precio, stock, destacado, id_autor, id_editorial, id_genero, id) => {
   try {
-    const consulta = "UPDATE libros SET titulo = $1, autor = $2, genero = $3, editorial = $4, resenia = $5, precio = $6, stock = $7 WHERE id = $8";
-    const values =[titulo, autor, genero, editorial, resenia, precio, stock, id];
+    const consulta = "UPDATE libros SET titulo = $1, resena = $2, urlimagen = $3, precio = $4, stock = $5, destacado = $6, id_autor = $7, id_editorial = $8, id_genero = $9 WHERE id = $10";
+    const values =[titulo, resena, urlimagen, precio, stock, destacado, id_autor, id_editorial, id_genero, id];
     const { rows } = await pool.query(consulta, values);
     console.log("libro modificado");
 
