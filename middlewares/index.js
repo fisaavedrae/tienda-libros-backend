@@ -1,9 +1,22 @@
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
-const { readLibros, verificaSiExisteCorreo } = require("../database/consultas");
+const {
+  readLibros,
+  verificaSiExisteCorreo,
+  validaExisteCampo,
+} = require("../database/consultas");
 const { verificaEmail } = require("../utils");
 
 const getLibrosMiddleware = async (req, res, next) => {
+  const {
+    id_autor,
+    id_editorial,
+    id_genero,
+    maxPrice,
+    limits,
+    page,
+    order_by,
+  } = req.query;
   // Aca debe ir el informe
   const url = req.url;
   console.log("---\n");
@@ -14,7 +27,75 @@ const getLibrosMiddleware = async (req, res, next) => {
     req.body
   );
   console.log("\n---\n");
-  next();
+  try {
+    if (
+      id_autor == "" ||
+      id_editorial == "" ||
+      id_genero == "" ||
+      maxPrice == "" ||
+      limits == "" ||
+      page == "" ||
+      order_by == "" ||
+      id_autor == undefined ||
+      id_editorial == undefined ||
+      id_genero == undefined ||
+      maxPrice == undefined ||
+      limits == undefined ||
+      page == undefined ||
+      order_by == undefined
+    ) {
+      return res.status(400).json({
+        status: "Bad Request",
+        message: "Debe ingresar todos los parametros",
+      });
+    } else {
+      if (page <= 0 || !Number(page)) {
+        return res.status(400).json({
+          status: "Bad Request",
+          message: "La pagina debe numerico y ser mayor a 0",
+        });
+      } else {
+        if (limits <= 0 || !Number(limits)) {
+          return res.status(400).json({
+            status: "Bad Request",
+            message: "El limite debe ser numerico y mayor a 0",
+          });
+        } else {
+          const [campo, direccion] = order_by.split("_");
+          console.log(campo, "direccion", direccion);
+          const post_query = await validaExisteCampo(campo);
+          console.log("respuesta si existe campo", post_query);
+          if (post_query == "") {
+            return res.status(400).json({
+              status: "Bad Request",
+              message: "El campo de ordenamiento no existe",
+            });
+          } else {
+            if (direccion != "ASC" && direccion != "DESC") {
+              return res.status(400).json({
+                status: "Bad Request",
+                message: "El orden debe ser ASC o DESC",
+              });
+            } else {
+              req.data = {
+                limits: limits,
+                page: page,
+                order_by: order_by,
+                id_autor: id_autor,
+                id_editorial: id_editorial,
+                id_genero: id_genero,
+                maxPrice: maxPrice,
+                dataValid: true,
+              };
+              next();
+            }
+          }
+        }
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
 };
 const getLibroMiddleware = async (req, res, next) => {
   const { id } = req.params;
