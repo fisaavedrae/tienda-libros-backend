@@ -2,18 +2,18 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  postLibrosController,
-  putLibrosController,
-  deleteLibrosController,
-} = require("../controllers");
+  postLibroController,
+  putLibroController,
+  deleteLibroController,
+} = require("../controllers/admin.js");
 const {
-  postLibrosMiddleware,
-  putLibrosMiddleware,
-  deleteLibrosMiddleware,
+  postLibroMiddleware,
+  putLibroMiddleware,
+  deleteLibroMiddleware,
 } = require("../middlewares");
-// CRUD
-router.post("/libros", postLibrosMiddleware, postLibrosController);
-router.put("/libros/:id", putLibrosMiddleware, putLibrosController);
-router.delete("/libros/:id", deleteLibrosMiddleware, deleteLibrosController);
+// CRUD admin
+router.post("/libros", postLibroMiddleware, postLibroController);
+router.put("/libros/:id", putLibroMiddleware, putLibroController);
+router.delete("/libros/:id", deleteLibroMiddleware, deleteLibroController);
 
 module.exports = router_admin;
