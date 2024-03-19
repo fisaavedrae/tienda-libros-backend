@@ -1,12 +1,58 @@
 const pool = require("./index");
+const format = require("pg-format");
 
-const readLibros = async () => {
+const readLibros = async (
+  id_autor,
+  id_editorial,
+  id_genero,
+  precio,
+  limits,
+  page,
+  order_by
+) => {
   try {
-    const consulta =
-      "select id_libro, titulo, resena, urlimagen, precio, stock, destacado,libros.id_autor, autor.nombre, libros.id_editorial, editorial.nombre, libros.id_genero, genero.genero from libros join autor on libros.id_autor = autor.id_autor  join editorial on libros.id_editorial = editorial.id_editorial join genero on libros.id_genero = genero.id_genero";
-    console.log(consulta);
+    const [campo, direccion] = order_by.split("_");
+    const offset = (page - 1) * limits;
+    console.log("offset", offset);
+    const consultaUno =
+      "select id_libro, titulo, resena, urlimagen, precio, stock, destacado,libros.id_autor, autor.nombre as autor, libros.id_editorial, editorial.nombre as editorial, libros.id_genero, genero.genero as genero from libros join autor on libros.id_autor = autor.id_autor  join editorial on libros.id_editorial = editorial.id_editorial join genero on libros.id_genero = genero.id_genero where ('-1' = '%s' or libros.id_autor = '%s') and ('-1' = '%s' or libros.id_editorial = '%s') and ('-1' = '%s' or libros.id_genero = '%s') and precio <= %s order by %s %s ";
+    const formattedQueryUno = format(
+      consultaUno,
+      id_autor,
+      id_autor,
+      id_editorial,
+      id_editorial,
+      id_genero,
+      id_genero,
+      precio,
+      campo,
+      direccion
+    );
+    const response = await pool.query(formattedQueryUno);
+    console.log("cantidad de libros:", response.rows.length);
+    const cantidadLibros = response.rows.length;
 
-    const { rows } = await pool.query(consulta);
+    const consulta =
+      "select %s as cantidadLibros, id_libro, titulo, resena, urlimagen, precio, stock, destacado,libros.id_autor, autor.nombre as autor, libros.id_editorial, editorial.nombre as editorial, libros.id_genero, genero.genero as genero from libros join autor on libros.id_autor = autor.id_autor  join editorial on libros.id_editorial = editorial.id_editorial join genero on libros.id_genero = genero.id_genero where ('-1' = '%s' or libros.id_autor = '%s') and ('-1' = '%s' or libros.id_editorial = '%s') and ('-1' = '%s' or libros.id_genero = '%s') and precio <= %s order by %s %s limit %s offset %s";
+    const formattedQuery = format(
+      consulta,
+      cantidadLibros,
+      id_autor,
+      id_autor,
+      id_editorial,
+      id_editorial,
+      id_genero,
+      id_genero,
+      precio,
+      campo,
+      direccion,
+      limits,
+      offset
+    );
+    console.log("formattedQuery", formattedQuery);
+    let { rows } = await pool.query(formattedQuery);
+    console.log("cantidad de libros:", rows.length);
+
     console.log("Libros encontrados con exito");
     return rows;
   } catch (error) {
@@ -17,7 +63,7 @@ const readLibros = async () => {
 const readLibro = async (id) => {
   try {
     const consulta =
-      "select id_libro, titulo, resena, urlimagen, precio, stock, destacado,libros.id_autor, autor.nombre, libros.id_editorial, editorial.nombre, libros.id_genero, genero.genero from libros join autor on libros.id_autor = autor.id_autor  join editorial on libros.id_editorial = editorial.id_editorial join genero on libros.id_genero = genero.id_genero where id_libro = $1";
+      "select id_libro, titulo, resena, urlimagen, precio, stock, destacado,libros.id_autor, autor.nombre as autor, libros.id_editorial, editorial.nombre as editorial, libros.id_genero, genero.genero as genero from libros join autor on libros.id_autor = autor.id_autor  join editorial on libros.id_editorial = editorial.id_editorial join genero on libros.id_genero = genero.id_genero where id_libro = $1";
     //console.log(consulta)
     const values = [id];
     const { rows } = await pool.query(consulta, values);
@@ -29,7 +75,8 @@ const readLibro = async (id) => {
 };
 const readAutores = async () => {
   try {
-    const consulta = "select id_autor, nombre FROM autor";
+    const consulta =
+      "select a.id_autor, a.nombre, c.cant as cantidad_libros from autor as a join  (select count(id_autor) cant, id_autor from libros group by id_autor) as c on a.id_autor = c.id_autor";
     //console.log(consulta)
 
     const { rows } = await pool.query(consulta);
@@ -42,7 +89,8 @@ const readAutores = async () => {
 
 const readEditoriales = async () => {
   try {
-    const consulta = "select id_editorial, nombre FROM editorial";
+    const consulta =
+      "select a.id_editorial, a.nombre, c.cant as cantidad_libros from editorial as a join  (select count(id_editorial) cant, id_editorial from libros group by id_editorial) as c on a.id_editorial = c.id_editorial";
     //console.log(consulta)
 
     const { rows } = await pool.query(consulta);
@@ -55,7 +103,8 @@ const readEditoriales = async () => {
 
 const readGeneros = async () => {
   try {
-    const consulta = "select id_genero, genero FROM genero";
+    const consulta =
+      "select a.id_genero, a.genero, c.cant as cantidad_libros from genero as a join (select count(id_genero) cant, id_genero from libros group by id_genero) as c on a.id_genero = c.id_genero";
     //console.log(consulta)
     const { rows } = await pool.query(consulta);
     console.log("Generos encontrados con exito");
@@ -118,6 +167,23 @@ const verificarCredenciales = async (email, password) => {
   }
 };
 
+const validaExisteCampo = async (campo) => {
+  console.log(campo);
+  try {
+    const formattedQuery = format(
+      `SELECT column_name 
+                       FROM information_schema.columns 
+                       WHERE table_schema='public' 
+                         and table_name='libros' 
+                         and column_name='%s'`,
+      campo
+    );
+    const { rows } = await pool.query(formattedQuery);
+    return rows;
+  } catch (error) {
+    console.log(error);
+  }
+};
 // CRUD admin
 //agregar un libro
 const agregaLibro = async (titulo, resena, urlimagen, precio, stock, destacado, id_autor, id_editorial, id_genero) => {
@@ -126,12 +192,10 @@ const agregaLibro = async (titulo, resena, urlimagen, precio, stock, destacado, 
     const values =[titulo, resena, urlimagen, precio, stock, destacado, id_autor, id_editorial, id_genero];
     const { rows } = await pool.query(consulta, values);
     console.log("libro agregado");
-
   } catch (error) {
-    console.log("No se pudo agregar libro");    
-  };
+    console.log("No se pudo agregar libro");
+  }
 };
-
 
 //modificar un libro
 const modificaLibro = async (titulo, resena, urlimagen, precio, stock, destacado, id_autor, id_editorial, id_genero, id) => {
@@ -140,24 +204,21 @@ const modificaLibro = async (titulo, resena, urlimagen, precio, stock, destacado
     const values =[titulo, resena, urlimagen, precio, stock, destacado, id_autor, id_editorial, id_genero, id];
     const { rows } = await pool.query(consulta, values);
     console.log("libro modificado");
-
   } catch (error) {
-    console.log("libro no encontrado");    
-  };
+    console.log("libro no encontrado");
+  }
 };
-
 
 //eliminar un libro
 const borraLibro = async (id) => {
   try {
-    const consulta ="DELETE FROM libros WHERE id = $1";
+    const consulta = "DELETE FROM libros WHERE id = $1";
     const values = [id];
     await pool.query(consulta, values);
     console.log("libro eliminado");
-
   } catch (error) {
     console.log("libro no encontrado");
-  };
+  }
 };
 
 module.exports = {
@@ -170,7 +231,10 @@ module.exports = {
   readUsuario,
   verificaSiExisteCorreo,
   verificarCredenciales,
+
+  validaExisteCampo,
+
   agregaLibro,
   modificaLibro,
-  borraLibro
+  borraLibro,
 };
