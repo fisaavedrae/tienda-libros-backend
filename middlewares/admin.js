@@ -10,10 +10,6 @@ const deleteLibroMiddleware = (req, res, next) => {
   next();
 };
 
-
-
-
-
 module.exports = {
   postLibroMiddleware,
   putLibroMiddleware,
