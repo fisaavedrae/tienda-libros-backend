@@ -1,3 +1,4 @@
+const { DatabaseError } = require("pg");
 const pool = require("./index");
 const format = require("pg-format");
 
@@ -184,17 +185,19 @@ const validaExisteCampo = async (campo) => {
     console.log(error);
   }
 };
-// CRUD admin
+
+// CRUD admin ------------------------------------------------------------------------
 //agregar un libro
 const agregaLibro = async (titulo, resena, urlimagen, precio, stock, destacado, id_autor, id_editorial, id_genero) => {
   try {
     const consulta = "INSERT INTO libros (id_libro, titulo, resena, urlimagen, precio, stock, destacado, id_autor, id_editorial, id_genero) VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9)";
     const values =[titulo, resena, urlimagen, precio, stock, destacado, id_autor, id_editorial, id_genero];
-    const { rows } = await pool.query(consulta, values);
+    const { rowCount } = await pool.query(consulta, values);
     console.log("libro agregado");
+    return rowCount;
     
   } catch (error) {
-    console.log("No se pudo agregar libro");
+    console.log(error);
   }
 };
 
@@ -203,25 +206,27 @@ const modificaLibro = async (titulo, resena, urlimagen, precio, stock, destacado
   try {
     const consulta = "UPDATE libros SET titulo = $1, resena = $2, urlimagen = $3, precio = $4, stock = $5, destacado = $6, id_autor = $7, id_editorial = $8, id_genero = $9 WHERE id_libro = $10";
     const values =[titulo, resena, urlimagen, precio, stock, destacado, id_autor, id_editorial, id_genero, id];
-    const { rows } = await pool.query(consulta, values);
+    const { rowCount } = await pool.query(consulta, values);
+    if (!rowCount) throw { code: 404, message: "No se encontró ningún libro con este ID" };
     console.log("libro modificado");
-    console.log(rows);
+    return rowCount;
 
   } catch (error) {
-    console.log("libro no encontrado");
+    console.log(error);
   };
 };
 
 //eliminar un libro
 const borraLibro = async (id) => {
   try {
-    const consulta = "DELETE FROM libros WHERE id_libro = $1";
-    const values = [id];
-    await pool.query(consulta, values);
+    const formatQuery = format("DELETE FROM libros WHERE id_libro = %s", id);
+    const { rowCount } = await pool.query(formatQuery);
+    if (!rowCount) throw { code: 404, message: "No se encontró ningún libro con este ID" };
     console.log("libro eliminado");
+    return rowCount;
 
   } catch (error) {
-    console.log("libro no encontrado");
+    console.log(error);
   };
 };
 
