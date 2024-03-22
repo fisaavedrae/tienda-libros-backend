@@ -198,7 +198,7 @@ const getUsuarioMiddleware = async (req, res, next) => {
 
   try {
     const Authorization = req.header("Authorization");
-    //console.log("Authorization:", Authorization)
+    console.log("Authorization:", Authorization);
     if (Authorization == undefined) {
       res.status(400).json({
         status: "Bad Request",
@@ -405,6 +405,56 @@ const postAuthMiddleware = async (req, res, next) => {
   }
 };
 
+const postOrdenesMiddleware = async (req, res, next) => {
+  const { total, envio } = req.query;
+  try {
+    const Authorization = req.header("Authorization");
+    console.log("Authorization:", Authorization);
+    if (Authorization == undefined) {
+      res.status(400).json({
+        status: "Bad Request",
+        message: "No hay token",
+      });
+    } else {
+      const token = Authorization.split("Bearer ")[1];
+      //console.log("Token:", token)
+      try {
+        jwt.verify(token, process.env.SECRET);
+        const { email } = jwt.decode(token);
+        //console.log(email)
+        if (email != "") {
+          const post_query = await verificaSiExisteCorreo(email);
+          if (post_query != "") {
+            req.data = {
+              email: email,
+              id_usuario: post_query[0].id_usuario,
+              total: total,
+              envio: envio,
+              carro: req.body,
+              dataValid: true,
+            };
+
+            next();
+          } else {
+            res.status(400).json({
+              status: "Bad Request",
+              message: "No existe el correo en la base de datos",
+            });
+          }
+        }
+      } catch (error) {
+        res.status(400).json({
+          status: "Bad Request",
+          message: "Token invalido",
+        });
+        next(error);
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getLibrosMiddleware,
   getLibroMiddleware,
@@ -414,4 +464,5 @@ module.exports = {
   getUsuarioMiddleware,
   postRegistroMiddleware,
   postAuthMiddleware,
+  postOrdenesMiddleware,
 };

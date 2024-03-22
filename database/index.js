@@ -4,6 +4,7 @@ require("dotenv").config();
 const pool = new Pool({
   connectionString: process.env.POSTGRES_URL,
 });
+
 /*
 const pool = new Pool({
   user: process.env.DB_USER,
