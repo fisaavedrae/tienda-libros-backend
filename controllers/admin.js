@@ -7,7 +7,8 @@ const {
   borraLibro,
   traerAutorSelect,
   traerEditorialSelect,
-  traerGeneroSelect
+  traerGeneroSelect,
+  traerAllLibros
 } = require("../database/consultas");
 
 //agregar un libro
@@ -135,6 +136,19 @@ const getSelectGeneroController = async (req, res, next) => {
   };
 };
 
+const getLibrosController = async (req, res, next) => {
+  try {
+    const dataLibros = await traerAllLibros();    
+    res.status(200).json(dataLibros);
+      
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ 
+      message: "Internal server error"
+    });
+  };
+};
+
 
 module.exports = {
   postLibroController,
@@ -142,5 +156,6 @@ module.exports = {
   deleteLibroController,
   getSelectAutorController,
   getSelectEditorialController,
-  getSelectGeneroController
+  getSelectGeneroController,
+  getLibrosController
 };
