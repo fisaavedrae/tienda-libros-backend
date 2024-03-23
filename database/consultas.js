@@ -269,6 +269,19 @@ const traerGeneroSelect = async () => {
   }
 };
 
+//traer todos los libros
+const traerAllLibros = async () => {
+  try {
+    const consulta = "SELECT * FROM libros";
+    const { rows } = await pool.query(consulta);
+    console.log("libros encontrados - ok");
+    return rows;
+    
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 
 module.exports = {
   readLibros,
@@ -288,5 +301,6 @@ module.exports = {
   borraLibro,
   traerAutorSelect,
   traerEditorialSelect,
-  traerGeneroSelect
+  traerGeneroSelect,
+  traerAllLibros
 };

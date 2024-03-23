@@ -2,6 +2,7 @@ const express = require("express");
 const router_admin = express.Router();
 
 const {
+  getLibrosController,
   postLibroController,
   putLibroController,
   deleteLibroController,
@@ -17,6 +18,7 @@ const {
 } = require("../middlewares/admin.js");
 
 // CRUD admin
+router_admin.get("/libros", getLibrosController);
 router_admin.post("/libros", postLibroMiddleware, postLibroController);
 router_admin.put("/libros/:id", putLibroMiddleware, putLibroController);
 router_admin.delete("/libros/:id", deleteLibroMiddleware, deleteLibroController);
