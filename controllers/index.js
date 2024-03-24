@@ -8,7 +8,9 @@ const {
   readEditoriales,
   readGeneros,
   createUsuario,
-  verificarCredenciales
+  readUsuario,
+  verificarCredenciales,
+  createOrden
 } = require("../database/consultas");
 
 const getLibrosController = async (req, res, next) => {
@@ -180,7 +182,14 @@ const postAuthController = async (req, res, next) => {
     if (dataValid) {
       const query = await verificarCredenciales(email, password);
       const { passwordencriptada } = query;
-      //console.log("passwordEncriptada", passwordencriptada, " passwordX", password, "query", query)
+      console.log(
+        "passwordEncriptada",
+        passwordencriptada,
+        " passwordX",
+        password,
+        "query",
+        query
+      );
       if (passwordencriptada != "" && passwordencriptada != undefined) {
         const passwordEsCorrecta = bcrypt.compareSync(
           password,
@@ -212,6 +221,38 @@ const postAuthController = async (req, res, next) => {
   }
 };
 
+const postOrdenesController = async (req, res, next) => {
+  const { data, body } = req;
+  const { id_usuario, email, total, envio, carro, dataValid } = data;
+  try {
+    if (dataValid) {
+      const post_query = await createOrden(
+        Number(total) + Number(envio),
+        id_usuario,
+        carro
+      );
+      const { id_orden } = post_query;
+
+      //const post_query = await createUsuario();
+      console.log(carro);
+      if (post_query != "" && post_query != undefined) {
+        res.status(200).json({
+          status: "Success",
+          message: "Orden Creada con exito",
+          id_orden: id_orden,
+        });
+      } else {
+        res.status(400).json({
+          status: "Bad Request",
+          message: "No se pudo crear el usuario",
+        });
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getLibrosController,
   getLibroController,
@@ -221,4 +262,5 @@ module.exports = {
   getUsuarioController,
   postRegistroController,
   postAuthController,
+  postOrdenesController,
 };

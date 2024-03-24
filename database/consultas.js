@@ -132,11 +132,36 @@ const createUsuario = async (nombre, email, password, direccion, ciudad) => {
 const readUsuario = async (email) => {
   try {
     const consulta =
-      "select id_usuario, nombre, email, password, direccion, ciudad FROM usuarios WHERE email = $1";
+      "SELECT id_usuario, nombre, email, password, direccion, ciudad, usuarios.id_rol, roles.rol FROM usuarios  JOIN roles ON roles.id_rol = usuarios.id_rol WHERE email = $1";
     //console.log(consulta)
     const values = [email];
     const { rows } = await pool.query(consulta, values);
     console.log("Usuario encontrado con exito");
+    return rows;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const createOrden = async (monto, id_usuario, carro) => {
+  try {
+    const consulta =
+      "INSERT INTO ordenes (fecha_orden, monto, id_usuario) VALUES (current_timestamp,$1,$2) RETURNING id_orden";
+    const values = [monto, id_usuario];
+    const { rows } = await pool.query(consulta, values);
+    console.log(rows);
+    const id_orden = rows[0].id_orden;
+    carro.map(async (obj) => {
+      const consulta2 =
+        "INSERT INTO ordenes_libros (id_orden, id_libro, cantidad, monto ) VALUES ($1, $2, $3, $4)";
+      const values2 = [
+        id_orden,
+        obj.id_libro,
+        obj.qty,
+        Number(obj.qty) * Number(obj.precio),
+      ];
+      await pool.query(consulta2, values2);
+    });
     return rows;
   } catch (error) {
     console.log(error);
@@ -293,7 +318,7 @@ module.exports = {
   readUsuario,
   verificaSiExisteCorreo,
   verificarCredenciales,
-
+  createOrden,
   validaExisteCampo,
 
   agregaLibro,
