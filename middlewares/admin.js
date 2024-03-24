@@ -53,7 +53,7 @@ const putLibroMiddleware = (req, res, next) => {
   const { id } = req.params;
   const { titulo, resena, urlimagen, precio, stock, destacado, id_autor, id_editorial, id_genero } = req.body;   
   try { 
-    if (!id || !Number(stock) || id <= 0){
+    if (!id || !Number(id) || id <= 0){
       return res.status(400).json({
         status: "Bad Request",
         message: "El parametro ID deben ser numerico y mayor a 0",
@@ -111,7 +111,7 @@ const putLibroMiddleware = (req, res, next) => {
 const deleteLibroMiddleware = (req, res, next) => {
   const { id } = req.params;
   try {
-    if (!id || !Number(stock) || id <= 0){
+    if (!id || !Number(id) || id <= 0){
       return res.status(400).json({
         status: "Bad Request",
         message: "El parametro ID deben ser numerico y mayor a 0",

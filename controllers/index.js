@@ -10,7 +10,7 @@ const {
   createUsuario,
   readUsuario,
   verificarCredenciales,
-  createOrden,
+  createOrden
 } = require("../database/consultas");
 
 const getLibrosController = async (req, res, next) => {
