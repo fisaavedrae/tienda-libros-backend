@@ -11,7 +11,10 @@ const {
   readUsuario,
   verificarCredenciales,
   createOrden,
+  readOrdenes,
+  readOrden,
 } = require("../database/consultas");
+const { verificaEmail } = require("../utils");
 
 const getLibrosController = async (req, res, next) => {
   const { data } = req;
@@ -226,12 +229,9 @@ const postOrdenesController = async (req, res, next) => {
   const { id_usuario, email, total, envio, carro, dataValid } = data;
   try {
     if (dataValid) {
-      const post_query = await createOrden(
-        Number(total) + Number(envio),
-        id_usuario,
-        carro
-      );
-      const { id_orden } = post_query;
+      const post_query = await createOrden(Number(total), id_usuario, carro);
+      console.log("post_query", post_query);
+      const id_orden = post_query;
 
       //const post_query = await createUsuario();
       console.log(carro);
@@ -244,7 +244,49 @@ const postOrdenesController = async (req, res, next) => {
       } else {
         res.status(400).json({
           status: "Bad Request",
-          message: "No se pudo crear el usuario",
+          message: "No se pudo crear la orden",
+        });
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+const getOrdenesController = async (req, res, next) => {
+  const { data } = req;
+  const { email, dataValid } = data;
+  try {
+    if (dataValid) {
+      const post_query = await readOrdenes(email);
+      //const post_query = await createUsuario();
+
+      if (post_query != "" && post_query != undefined) {
+        res.status(200).json(post_query);
+      } else {
+        res.status(400).json({
+          status: "Bad Request",
+          message: "No se pudo obtener las ordenes del usuario",
+        });
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+const getDetalleOrdenController = async (req, res, next) => {
+  const { data } = req;
+  const { email, id_orden, dataValid } = data;
+  try {
+    if (dataValid) {
+      const post_query = await readOrden(email);
+      //const post_query = await createUsuario();
+
+      if (post_query != "" && post_query != undefined) {
+        res.status(200).json(post_query);
+      } else {
+        res.status(400).json({
+          status: "Bad Request",
+          message: "No se pudo obtener las ordenes del usuario",
         });
       }
     }
@@ -263,4 +305,6 @@ module.exports = {
   postRegistroController,
   postAuthController,
   postOrdenesController,
+  getOrdenesController,
+  getDetalleOrdenController,
 };
