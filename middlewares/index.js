@@ -407,6 +407,20 @@ const postAuthMiddleware = async (req, res, next) => {
 
 const postOrdenesMiddleware = async (req, res, next) => {
   const { total, envio } = req.query;
+  console.log("estoy en el middleware");
+  console.log("total: ", total, " envio: ", envio);
+
+  // Aca debe ir el informe
+  const url = req.url;
+  console.log("---\n");
+  console.log(
+    ` Hoy ${new Date()} Se ha recibido una consulta en la ruta GET${url} con los parámetros: `,
+    req.query,
+    " body:",
+    req.body
+  );
+  console.log("\n---\n");
+
   try {
     const Authorization = req.header("Authorization");
     console.log("Authorization:", Authorization);
@@ -455,6 +469,99 @@ const postOrdenesMiddleware = async (req, res, next) => {
   }
 };
 
+const getOrdenesMiddleware = async (req, res, next) => {
+  try {
+    const Authorization = req.header("Authorization");
+    console.log("Authorization:", Authorization);
+    if (Authorization == undefined) {
+      res.status(400).json({
+        status: "Bad Request",
+        message: "No hay token",
+      });
+    } else {
+      const token = Authorization.split("Bearer ")[1];
+      //console.log("Token:", token)
+      try {
+        jwt.verify(token, process.env.SECRET);
+        const { email } = jwt.decode(token);
+        //console.log(email)
+        if (email != "") {
+          const post_query = await verificaSiExisteCorreo(email);
+          if (post_query != "") {
+            req.data = {
+              email: email,
+              id_usuario: post_query[0].id_usuario,
+              dataValid: true,
+            };
+
+            next();
+          } else {
+            res.status(400).json({
+              status: "Bad Request",
+              message: "No existe el correo en la base de datos",
+            });
+          }
+        }
+      } catch (error) {
+        res.status(400).json({
+          status: "Bad Request",
+          message: "Token invalido",
+        });
+        next(error);
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+const getDetalleOrdenMiddleware = async (req, res, next) => {
+  const { id_orden } = req.params;
+  console.log("id_orden:", id_orden);
+  try {
+    const Authorization = req.header("Authorization");
+    console.log("Authorization:", Authorization);
+    if (Authorization == undefined) {
+      res.status(400).json({
+        status: "Bad Request",
+        message: "No hay token",
+      });
+    } else {
+      const token = Authorization.split("Bearer ")[1];
+      //console.log("Token:", token)
+      try {
+        jwt.verify(token, process.env.SECRET);
+        const { email } = jwt.decode(token);
+        //console.log(email)
+        if (email != "") {
+          const post_query = await verificaSiExisteCorreo(email);
+          if (post_query != "") {
+            req.data = {
+              email: email,
+              id_orden: id_orden,
+              dataValid: true,
+            };
+
+            next();
+          } else {
+            res.status(400).json({
+              status: "Bad Request",
+              message: "No existe el correo en la base de datos",
+            });
+          }
+        }
+      } catch (error) {
+        res.status(400).json({
+          status: "Bad Request",
+          message: "Token invalido",
+        });
+        next(error);
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getLibrosMiddleware,
   getLibroMiddleware,
@@ -465,4 +572,6 @@ module.exports = {
   postRegistroMiddleware,
   postAuthMiddleware,
   postOrdenesMiddleware,
+  getOrdenesMiddleware,
+  getDetalleOrdenMiddleware,
 };

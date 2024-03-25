@@ -149,7 +149,7 @@ const createOrden = async (monto, id_usuario, carro) => {
       "INSERT INTO ordenes (fecha_orden, monto, id_usuario) VALUES (current_timestamp,$1,$2) RETURNING id_orden";
     const values = [monto, id_usuario];
     const { rows } = await pool.query(consulta, values);
-    console.log(rows);
+    console.log("primer insert", rows);
     const id_orden = rows[0].id_orden;
     carro.map(async (obj) => {
       const consulta2 =
@@ -162,6 +162,35 @@ const createOrden = async (monto, id_usuario, carro) => {
       ];
       await pool.query(consulta2, values2);
     });
+    return id_orden;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const readOrdenes = async (email) => {
+  try {
+    const consulta =
+      "select o.id_orden, TO_CHAR(fecha_orden, 'dd/mm/yyyy') fecha_orden, monto from ordenes o join usuarios u on o.id_usuario = u.id_usuario where u.email= $1";
+    //"select o.id_orden, fecha_orden, o.monto monto_orden, l.titulo, l.urlimagen, ol.monto precio, ol.cantidad from ordenes o join usuarios u on o.id_usuario = u.id_usuario join ordenes_libros ol on ol.id_orden = o.id_orden join libros l on l.id_libro = ol.id_libro where u.email = $1 order by id_orden";
+    console.log(consulta);
+    const values = [email];
+    const { rows } = await pool.query(consulta, values);
+    console.log("Ordenes encontradas con exito");
+    return rows;
+  } catch (error) {
+    console.log(error);
+  }
+};
+const readOrden = async (email) => {
+  try {
+    const consulta =
+      "select o.id_orden, l.titulo, l.urlimagen, ol.monto, ol.cantidad, l.precio from ordenes o join usuarios u on o.id_usuario = u.id_usuario join ordenes_libros ol on ol.id_orden = o.id_orden join libros l on l.id_libro = ol.id_libro       where u.email = $1 order by id_orden";
+    console.log(consulta);
+    console.log("email", email);
+    const values = [email];
+    const { rows } = await pool.query(consulta, values);
+    console.log("Ordenes encontradas con exito");
     return rows;
   } catch (error) {
     console.log(error);
@@ -334,6 +363,8 @@ module.exports = {
   verificaSiExisteCorreo,
   verificarCredenciales,
   createOrden,
+  readOrdenes,
+  readOrden,
   validaExisteCampo,
 
   agregaLibro,
