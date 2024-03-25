@@ -10,9 +10,12 @@ const {
   createUsuario,
   readUsuario,
   verificarCredenciales,
+
   createOrden,
   readOrdenes,
   readOrden,
+  createOrden
+
 } = require("../database/consultas");
 const { verificaEmail } = require("../utils");
 
