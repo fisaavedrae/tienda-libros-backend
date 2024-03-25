@@ -11,7 +11,8 @@ const {
   postRegistroController,
   postAuthController,
   postOrdenesController,
-  //getOrdenesController,
+  getOrdenesController,
+  getDetalleOrdenController,
 } = require("../controllers/index.js");
 const {
   getLibrosMiddleware,
@@ -23,7 +24,8 @@ const {
   postRegistroMiddleware,
   postAuthMiddleware,
   postOrdenesMiddleware,
-  // getOrdenesMiddleware,
+  getOrdenesMiddleware,
+  getDetalleOrdenMiddleware,
 } = require("../middlewares/index.js");
 
 router.get("/libros/filtros", getLibrosMiddleware, getLibrosController);
@@ -35,7 +37,12 @@ router.get("/usuarios/id", getUsuarioMiddleware, getUsuarioController);
 router.post("/registro", postRegistroMiddleware, postRegistroController);
 router.post("/login", postAuthMiddleware, postAuthController);
 router.post("/ordenes", postOrdenesMiddleware, postOrdenesController);
-//router.get("/ordenes/:id", getOrdenesMiddleware, getOrdenesController);
+router.get("/ordenes/", getOrdenesMiddleware, getOrdenesController);
+router.get(
+  "/ordenes/:id_orden",
+  getDetalleOrdenMiddleware,
+  getDetalleOrdenController
+);
 //router.get("/carrito/:id", getCarritoMiddleware, getCarritoController);
 //router.post("/carrito/:id", postCarritoMiddleware, postCarritoController);
 
