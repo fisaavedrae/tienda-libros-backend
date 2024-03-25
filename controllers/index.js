@@ -8,6 +8,7 @@ const {
   readEditoriales,
   readGeneros,
   createUsuario,
+  verificarCredenciales
 } = require("../database/consultas");
 
 const getLibrosController = async (req, res, next) => {
