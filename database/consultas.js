@@ -343,8 +343,7 @@ const traerRol = async (email) => {
     values = [email]
     const { rows } = await pool.query(consulta, values);
     console.log("roles encontrados - ok");
-    console.log( rows)
-    return rows;
+    return rows[0].id_rol;
     
   } catch (error) {
     console.log(error);

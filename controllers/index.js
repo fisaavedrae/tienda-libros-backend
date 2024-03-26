@@ -14,8 +14,7 @@ const {
   createOrden,
   readOrdenes,
   readOrden,
-  createOrden
-
+  //createOrden
 } = require("../database/consultas");
 const { verificaEmail } = require("../utils");
 
