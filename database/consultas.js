@@ -307,6 +307,21 @@ const traerAllLibros = async () => {
   }
 };
 
+const traerRol = async (email) => {
+  //console.log("consulta" + email)
+  try {
+    const consulta = "SELECT id_rol FROM usuarios WHERE email = $1";
+    values = [email]
+    const { rows } = await pool.query(consulta, values);
+    console.log("roles encontrados - ok");
+    console.log( rows)
+    return rows;
+    
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 
 module.exports = {
   readLibros,
@@ -327,5 +342,6 @@ module.exports = {
   traerAutorSelect,
   traerEditorialSelect,
   traerGeneroSelect,
-  traerAllLibros
+  traerAllLibros,
+  traerRol
 };
