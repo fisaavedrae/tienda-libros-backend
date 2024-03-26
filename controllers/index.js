@@ -10,12 +10,9 @@ const {
   createUsuario,
   readUsuario,
   verificarCredenciales,
-
   createOrden,
   readOrdenes,
   readOrden,
-  createOrden
-
 } = require("../database/consultas");
 const { verificaEmail } = require("../utils");
 
@@ -163,7 +160,7 @@ const postRegistroController = async (req, res, next) => {
       );
       //console.log(post_query)
       if (post_query != "" && post_query != undefined) {
-        res.status(200).json({
+        res.status(201).json({
           status: "Success",
           message: "Usuario Creado con exito",
           usuario: post_query,
