@@ -13,3 +13,5 @@ app.use("/", routes);
 app.use("/", routes_admin);
 
 app.listen(PORT, () => console.log(`Servidor corriendo en el puerto ${PORT}`));
+
+module.exports = app;
