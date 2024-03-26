@@ -1,6 +1,6 @@
 const express = require("express");
 const router_admin = express.Router();
-const validarAdmin = require('../middlewares/validarAdmin.js')
+const { validarAdmin } = require('../middlewares/validarAdmin.js')
 
 const {
   getLibrosController,
