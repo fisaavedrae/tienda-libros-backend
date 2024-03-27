@@ -291,5 +291,106 @@ PORT=3000
   http://localhost:3000/ordenes/1
   ```
 
+- GET: /libros
+
+  - Permite obtener el listado de todos los libros. Esta ruta no recibe parametros
+
+  ```code
+  http://localhost:3000/libros
+  ```
+
+
+- **ATENCION:** Las siguientes 3 rutas requieren que el Token sea de un usuario con rol de administrador. Para obtener este Token use la ruta POST: /login con las siguientes credenciales.
+
+  ```json
+  {
+    "email": "rimar.basaa@gmail.com",
+    "password": "rimar"
+  }
+  ```
+
+- POST: /libros
+
+  - Permite agregar un libro. Esta ruta recibe los siguientes parametros:
+  <ul>
+  <li>body: [json] Todos los campos para agregar el libro</li>
+  <li>token: [string] Indica el token del usuario, abajo un ejemplo de token para el usuario rimar.basaa@gmail.com, se debe agregar en <b>Autorization</b></li>
+  </ul>
+
+  ```json
+  [
+    {
+      "titulo": "Titulo",
+      "resena": "Reseña libro",
+      "urlimagen": "urlimagen",
+      "precio": 10000,
+      "stock": 100,
+      "destacado": false,
+      "id_autor": 1,
+      "id_editorial": 1,
+      "id_genero": 1
+    }
+  ]
+  ```
+
+  ```token
+  Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJpbWFyLmJhc2FhQGdtYWlsLmNvbSIsImlhdCI6MTcxMTQ5NjM1OH0.MiZSq-2GJD8LWik9pHpy8Bf2JsU-HfBtvMG0tGcNQzg
+  ```
+
+  ```code
+  http://localhost:3000/libros
+  ```
+
+- PUT: /libros/:id
+
+  - Permite modificar un libro. Esta ruta recibe los siguientes parametros:
+  <ul>
+  <li>id: [integer] Indica el ID del libro a modificar</li>
+  <li>body: [json] Todos los campos para modificar el libro</li>
+  <li>token: [string] Indica el token del usuario, abajo un ejemplo de token para el usuario rimar.basaa@gmail.com, se debe agregar en <b>Autorization</b></li>
+  </ul>
+
+  ```json
+  [
+    {
+      "titulo": "Titulo modificado",
+      "resena": "Reseña libro modificado",
+      "urlimagen": "urlimagen modificado",
+      "precio": 10000,
+      "stock": 100,
+      "destacado": false,
+      "id_autor": 1,
+      "id_editorial": 1,
+      "id_genero": 1
+    }
+  ]
+  ```
+
+  ```token
+  Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJpbWFyLmJhc2FhQGdtYWlsLmNvbSIsImlhdCI6MTcxMTQ5NjM1OH0.MiZSq-2GJD8LWik9pHpy8Bf2JsU-HfBtvMG0tGcNQzg
+  ```
+
+  ```code
+  http://localhost:3000/libros/1
+  ```
+
+- DELETE: /libros/:id
+
+  - Permite eliminar un libro. Esta ruta recibe los siguientes parametros:
+  <ul>
+  <li>id: [integer] Indica el ID del libro a eliminar</li>
+  <li>token: [string] Indica el token del usuario, abajo un ejemplo de token para el usuario rimar.basaa@gmail.com, se debe agregar en <b>Autorization</b></li>
+  </ul>
+
+  ```token
+  Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJpbWFyLmJhc2FhQGdtYWlsLmNvbSIsImlhdCI6MTcxMTQ5NjM1OH0.MiZSq-2GJD8LWik9pHpy8Bf2JsU-HfBtvMG0tGcNQzg
+  ```
+
+  ```code
+  http://localhost:3000/libros/1
+  ```
+
+
+
 - [Live app](https://tienda-libros-frontend.vercel.app/)
 - [Repo revisión](https://github.com/fisaavedrae/tienda-libros-backend)
