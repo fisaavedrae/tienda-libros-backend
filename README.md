@@ -43,7 +43,7 @@ Se recomienda utilizar un framework de CSS para agilizar la construcción de la 
 </ul>
 
 - [Live app](https://tienda-libros-frontend.vercel.app/)
-- [Repo revisión](https://github.com/Jedi-Developer/tienda-libros-frontend-entrega)
+- [Repo revisión](https://github.com/fisaavedrae/tienda-libros-backend)
 
 ```code
 repo original
