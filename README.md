@@ -139,7 +139,7 @@ PORT=3000
 
 - GET: /libros/filtros
 
-  - Permite obtener el listado de libros a mostrar en la grilla, de acuerdo a los filtros seleccionados. Esta ruta recibe parametros los siguientes parametros:
+  - Permite obtener el listado de libros a mostrar en la grilla, de acuerdo a los filtros seleccionados. Esta ruta recibe los siguientes parametros:
   <ul>
   <li>id_autor: [integer] Para mostrar todos los autores se debe enviar -1 o el id de un autor</li>
   <li>id_editorial: [integer] Para mostrar todos las editoriales se debe enviar -1 o el id de una editorial</li>
@@ -156,7 +156,7 @@ PORT=3000
 
 - GET: /libros/:id
 
-  - Permite obtener el listado de libros a mostrar en la grilla, de acuerdo a los filtros seleccionados. Esta ruta recibe parametros los siguientes parametros:
+  - Permite obtener el listado de libros a mostrar en la grilla, de acuerdo a los filtros seleccionados. Esta ruta recibe los siguientes parametros:
   <ul>
   <li>id: [integer] Indica el ID del libro a mostrar</li>
   </ul>
@@ -169,7 +169,7 @@ PORT=3000
 
   - Permite obtener los datos de un usuario logueado. Esta ruta recibe los siguientes parametros:
   <ul>
-  <li>token: [string] Indica el token del usuario, abajo un ejemplo de token para el usuario fisaavedrae@icloud.com, se debe agregar en <b>Autorization</b></li>
+  <li>token: [string] Indica el token del usuario, abajo un ejemplo de token para el usuario fisaavedrae@icloud.com, se debe agregar en <b>Authorization</b></li>
   </ul>
 
   ```code
@@ -203,7 +203,7 @@ PORT=3000
 
 - POST: /login
 
-  - Permite autentificar un usuario. Esta ruta recibe parametros los siguientes parametros:
+  - Permite autentificar un usuario. Esta ruta recibe los siguientes parametros:
   <ul>
   <li>body: [json] Los campos para loguear el usuario</li>
   </ul>
@@ -221,12 +221,12 @@ PORT=3000
 
 - POST: /ordenes
 
-  - Permite crear una orden. Esta ruta recibe parametros los siguientes parametros:
+  - Permite crear una orden. Esta ruta recibe los siguientes parametros:
   <ul>
   <li>total: [integer] Monto con el total de la orden</li>
   <li>envio: [integer] Valor del envío</li>
   <li>body: [json] Todos los campos para crear la orden (carro)</li>
-  <li>token: [string] Indica el token del usuario, abajo un ejemplo de token para el usuario fisaavedrae@icloud.com, se debe agregar en <b>Autorization</b></li>
+  <li>token: [string] Indica el token del usuario, abajo un ejemplo de token para el usuario fisaavedrae@icloud.com, se debe agregar en <b>Authorization</b></li>
   </ul>
 
   ```json
@@ -261,10 +261,10 @@ PORT=3000
 
 - GET: /ordenes
 
-  - Permite listar las ordenes de un usuario. Esta ruta recibe parametros los siguientes parametros:
+  - Permite listar las ordenes de un usuario. Esta ruta recibe los siguientes parametros:
   <ul>
 
-  <li>token: [string] Indica el token del usuario, abajo un ejemplo de token para el usuario fisaavedrae@icloud.com, se debe agregar en <b>Autorization</b></li>
+  <li>token: [string] Indica el token del usuario, abajo un ejemplo de token para el usuario fisaavedrae@icloud.com, se debe agregar en <b>Authorization</b></li>
   </ul>
 
   ```token
@@ -277,10 +277,10 @@ PORT=3000
 
 - GET: /ordenes/:id_orden <b>(Disclaimer: esta ruta va a sufrir cambios)</b>
 
-  - Permite obtener el detalle de todas las ordenes de un usuario. Esta ruta recibe parametros los siguientes parametros:
+  - Permite obtener el detalle de todas las ordenes de un usuario. Esta ruta recibe los siguientes parametros:
     <ul>
     <li>id_orden: [integer] Indica el ID de la orden a mostrar</li>
-    <li>token: [string] Indica el token del usuario, abajo un ejemplo de token para el usuario fisaavedrae@icloud.com, se debe agregar en <b>Autorization</b></li>
+    <li>token: [string] Indica el token del usuario, abajo un ejemplo de token para el usuario fisaavedrae@icloud.com, se debe agregar en <b>Authorization</b></li>
     </ul>
 
   ```token
@@ -314,7 +314,7 @@ PORT=3000
   - Permite agregar un libro. Esta ruta recibe los siguientes parametros:
   <ul>
   <li>body: [json] Todos los campos para agregar el libro</li>
-  <li>token: [string] Indica el token del usuario, abajo un ejemplo de token para el usuario rimar.basaa@gmail.com, se debe agregar en <b>Autorization</b></li>
+  <li>token: [string] Indica el token del usuario, abajo un ejemplo de token para el usuario rimar.basaa@gmail.com, se debe agregar en <b>Authorization</b></li>
   </ul>
 
   ```json
@@ -347,7 +347,7 @@ PORT=3000
   <ul>
   <li>id: [integer] Indica el ID del libro a modificar</li>
   <li>body: [json] Todos los campos para modificar el libro</li>
-  <li>token: [string] Indica el token del usuario, abajo un ejemplo de token para el usuario rimar.basaa@gmail.com, se debe agregar en <b>Autorization</b></li>
+  <li>token: [string] Indica el token del usuario, abajo un ejemplo de token para el usuario rimar.basaa@gmail.com, se debe agregar en <b>Authorization</b></li>
   </ul>
 
   ```json
@@ -379,7 +379,7 @@ PORT=3000
   - Permite eliminar un libro. Esta ruta recibe los siguientes parametros:
   <ul>
   <li>id: [integer] Indica el ID del libro a eliminar</li>
-  <li>token: [string] Indica el token del usuario, abajo un ejemplo de token para el usuario rimar.basaa@gmail.com, se debe agregar en <b>Autorization</b></li>
+  <li>token: [string] Indica el token del usuario, abajo un ejemplo de token para el usuario rimar.basaa@gmail.com, se debe agregar en <b>Authorization</b></li>
   </ul>
 
   ```token
