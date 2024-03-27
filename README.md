@@ -94,20 +94,202 @@ El tercer hito consiste en el desarrollo backend del proyecto, en donde debes:
 # Consideraciones
 
 <ul>
-<li>El repo entregado para revisión de frontend, es una copia del repo original, esto debido a que continuaremos trabajando en el repo original para realizar las conexiones con backend</li>
-<li>En esta instancia toda la inteacción dinamica con datos se realizó usando archivos json, la interacción con base de datos se realizará en la proxima etapa (backend)</li>
-<li>Login, Registro de usuario, CRUD de Libros, se desarrollaron hasta el ingreso de datos por formulario y su validación de completitud de los datos, las validaciones de integridad se realizarán en la proxima etapa (backend)</li>
-<li>Login, Registro de usuario, CRUD de Libros, se desarrollaron hasta el ingreso de datos por formulario, para ser visualizados como maqueta semi-funcional, la funcionalidad completa se realizará una vez se haga la conexión con el backend</li>
-<li>Las funcionalidades de filtros y ordenamiento de la grilla de productos, se realizará en la etapa 2 (backend)</li>
-<li>Por ahora todas las paginas estan publicas, las vsitas privadas, quedaran ocultas cuando se conecten con el backend en la siguiente etapa del proyecto</li>
+<li>El repo entregado para revisión, contiene Frontend y Backend, y continuamos trabajando el los dos repositorios</li>
+<li>En la raiz del repositorio se encuentra la carpeta <b>script_bd</b> donde está el archivo con las querys para creacion de base de datos y tablas</li>
+<li>En la raiz del repositorio se encuentra la carpeta <b>script_bd</b> con los archivos para cargar la informacion base del sitio web, Libros, Autores, Editoriales, Generos y Usuarios (cliente y admin)</li>
+<li>El registro de usuario solo permite crear un usuario del tipo Usuario (cliente), para crear un usuario Admin, se debe asignar el rol de administrador al usuario, desde la base de datos </li>
 </ul>
+
+Se deben cargar las siguientes variables en el archivo .env
+
+```code
+DB_USER=""
+DB_DATABASE=""
+DB_HOST=""
+DB_PASSWORD=""
+SECRET = "az_AZ"
+PORT=3000
+```
+
+# API - Documentación Rutas
+
+- GET: /autores
+
+  - Permite obtener el listado de todos los autores. Esta ruta no recibe parametros
+
+  ```code
+  http://localhost:3000/autores
+  ```
+
+- GET: /editoriales
+
+  - Permite obtener el listado de todas las editoriales. Esta ruta no recibe parametros
+
+  ```code
+  http://localhost:3000/editoriales
+  ```
+
+- GET: /generos
+
+  - Permite obtener el listado de todas los generos. Esta ruta no recibe parametros
+
+  ```code
+  http://localhost:3000/generos
+  ```
+
+- GET: /libros/filtros
+
+  - Permite obtener el listado de libros a mostrar en la grilla, de acuerdo a los filtros seleccionados. Esta ruta recibe parametros los siguientes parametros:
+  <ul>
+  <li>id_autor: [integer] Para mostrar todos los autores se debe enviar -1 o el id de un autor</li>
+  <li>id_editorial: [integer] Para mostrar todos las editoriales se debe enviar -1 o el id de una editorial</li>
+  <li>id_genero: [integer] Para mostrar todos los generos se debe enviar -1 o el id de un genero</li>
+  <li>maxPrice: [integer] Lista libros con el precio <= maxprice, por defecto desde el front se envia 100000</li>
+  <li>limits: [integer] Indica el limite de productos por pagina</li>
+  <li>page: [integer] Indica la pagina a mostrar</li>
+  <li>order_by: [string] Indica el campo y dirección de ordenamiento, recibe uno de los siguientes valores adicionales al campo (unidos por <b>_</b> ): ASC o DESC, por ejemplo: <b>titulo_ASC</b>, <b>precio_DESC</b></li>
+  </ul>
+
+  ```code
+  http://localhost:3000/libros/filtros?id_autor=-1&id_editorial=-1&id_genero=-1&maxPrice=100000&limits=6&page=1&order_by=titulo_DESC
+  ```
+
+- GET: /libros/:id
+
+  - Permite obtener el listado de libros a mostrar en la grilla, de acuerdo a los filtros seleccionados. Esta ruta recibe parametros los siguientes parametros:
+  <ul>
+  <li>id: [integer] Indica el ID del libro a mostrar</li>
+  </ul>
+
+  ```code
+  http://localhost:3000/libros/1
+  ```
+
+- GET: /usuarios/id
+
+  - Permite obtener los datos de un usuario logueado. Esta ruta recibe los siguientes parametros:
+  <ul>
+  <li>token: [string] Indica el token del usuario, abajo un ejemplo de token para el usuario fisaavedrae@icloud.com, se debe agregar en <b>Autorization</b></li>
+  </ul>
+
+  ```code
+  Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZpc2FhdmVkcmFlQGljbG91ZC5jb20iLCJpYXQiOjE3MTEzMjkxMzR9.ciNGY_x9ncM7Fzopj-14mCs1mae3vGBxaoL4XkUAp4A
+  ```
+
+  ```code
+  http://localhost:3000/usuarios/id
+  ```
+
+- POST: /registro
+
+  - Permite registrar un nuevo usuario. Esta ruta recibe parametros los siguientes parametros:
+  <ul>
+  <li>body: [json] Todos los campos para crear el usuario</li>
+  </ul>
+
+  ```json
+  {
+    "nombre": "nombre usuario",
+    "email": "email@email.com",
+    "password": "password usuario",
+    "direccion": "direccion usuario",
+    "ciudad": "ciudad usuario"
+  }
+  ```
+
+  ```code
+  http://localhost:3000/registro
+  ```
+
+- POST: /login
+
+  - Permite autentificar un usuario. Esta ruta recibe parametros los siguientes parametros:
+  <ul>
+  <li>body: [json] Los campos para loguear el usuario</li>
+  </ul>
+
+  ```json
+  {
+    "email": "email@email.com",
+    "password": "password usuario"
+  }
+  ```
+
+  ```code
+  http://localhost:3000/login
+  ```
+
+- POST: /ordenes
+
+  - Permite crear una orden. Esta ruta recibe parametros los siguientes parametros:
+  <ul>
+  <li>total: [integer] Monto con el total de la orden</li>
+  <li>envio: [integer] Valor del envío</li>
+  <li>body: [json] Todos los campos para crear la orden (carro)</li>
+  <li>token: [string] Indica el token del usuario, abajo un ejemplo de token para el usuario fisaavedrae@icloud.com, se debe agregar en <b>Autorization</b></li>
+  </ul>
+
+  ```json
+  [
+    {
+      "cantidadlibros": 42,
+      "id_libro": 26,
+      "titulo": "1984",
+      "resena": "Una distopía clásica que describe un mundo totalitario donde la libertad individual es suprimida por un gobierno opresivo.",
+      "urlimagen": "https://fidatech.net/felipe/fotos-libros/1984.jpg",
+      "precio": 16000,
+      "stock": 80,
+      "destacado": false,
+      "id_autor": 14,
+      "autor": "George Orwell",
+      "id_editorial": 13,
+      "editorial": "Secker & Warburg",
+      "id_genero": 5,
+      "genero": "Ciencia ficción",
+      "qty": 1
+    }
+  ]
+  ```
+
+  ```token
+  Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZpc2FhdmVkcmFlQGljbG91ZC5jb20iLCJpYXQiOjE3MTEzMjkxMzR9.ciNGY_x9ncM7Fzopj-14mCs1mae3vGBxaoL4XkUAp4A
+  ```
+
+  ```code
+  http://localhost:3000/ordenes?total=20500&envio=4500
+  ```
+
+- GET: /ordenes
+
+  - Permite listar las ordenes de un usuario. Esta ruta recibe parametros los siguientes parametros:
+  <ul>
+
+  <li>token: [string] Indica el token del usuario, abajo un ejemplo de token para el usuario fisaavedrae@icloud.com, se debe agregar en <b>Autorization</b></li>
+  </ul>
+
+  ```token
+  Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZpc2FhdmVkcmFlQGljbG91ZC5jb20iLCJpYXQiOjE3MTEzMjkxMzR9.ciNGY_x9ncM7Fzopj-14mCs1mae3vGBxaoL4XkUAp4A
+  ```
+
+  ```code
+  http://localhost:3000/ordenes
+  ```
+
+- GET: /ordenes/:id_orden <b>(Disclaimer: esta ruta va a sufrir cambios)</b>
+
+  - Permite obtener el detalle de todas las ordenes de un usuario. Esta ruta recibe parametros los siguientes parametros:
+    <ul>
+    <li>id_orden: [integer] Indica el ID de la orden a mostrar</li>
+    <li>token: [string] Indica el token del usuario, abajo un ejemplo de token para el usuario fisaavedrae@icloud.com, se debe agregar en <b>Autorization</b></li>
+    </ul>
+
+  ```token
+  Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZpc2FhdmVkcmFlQGljbG91ZC5jb20iLCJpYXQiOjE3MTEzMjkxMzR9.ciNGY_x9ncM7Fzopj-14mCs1mae3vGBxaoL4XkUAp4A
+  ```
+
+  ```code
+  http://localhost:3000/ordenes/1
+  ```
 
 - [Live app](https://tienda-libros-frontend.vercel.app/)
 - [Repo revisión](https://github.com/Jedi-Developer/tienda-libros-frontend-entrega)
-
-```code
-repo original
-
-https://github.com/fisaavedrae/tienda-libros-frontend
-
-```
