@@ -27,7 +27,7 @@ describe("Operaciones de Tienda de Libros", () => {
   });
 
   it("Obteniendo un 201 al crear un usuario", async () => {
-    // Prueba que la ruta POST /cafes agrega un nuevo café y devuelve un código 201.
+    // Prueba que la ruta POST /registro agrega un nuevo usuario y devuelve un código 201.
     const usuario = {
       nombre: "Manu Chao",
       email: "manu@chao.com",
@@ -39,4 +39,42 @@ describe("Operaciones de Tienda de Libros", () => {
     const status = response.statusCode;
     expect(status).toBe(201);
   });
+});
+
+describe("Operaciones CRUD de libros", () => {
+  
+  it('Comprobando ruta GET de libros Ok devuelve statusCode [200]', async () => {
+    const response = await request(server).get('/libros').send();
+    const status = response.statusCode;
+      expect(status).toBe(200);            
+  });
+
+  it('Eliminar libro sin token de autorización devuelve statusCode [401]', async () => {
+    const id = 100;
+    const response =  await request(server).delete(`/libros/${id}`).send();
+    const status = response.statusCode;
+    expect(status).toBe(401);
+  });  
+
+  /*ATENCION: Para esta prueba se debe usar un token valido de 1 usuario con rol de administrador. Obtengalo en la ruta POST /login con las siguientes credenciales:
+  email: [rimar.basaa@gmail.com] - password: [rimar] y reemplazelo en la variable token.*/
+  it('Agregar libro ok con token de autorizacion devuelve statusCode [200]', async () => {
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJpbWFyLmJhc2FhQGdtYWlsLmNvbSIsImlhdCI6MTcxMTQ5NjM1OH0.MiZSq-2GJD8LWik9pHpy8Bf2JsU-HfBtvMG0tGcNQzg";
+    const libro = {
+      name: 'Producto de Prueba',
+      titulo: "Titulo prueba",
+      resena: "Reseña de prueba",
+      urlimagen: "imagen de prueba",
+      precio: 10000,
+      stock: 10,
+      destacado: false,
+      id_autor: 2,
+      id_editorial: 2,
+      id_genero: 3
+    };
+    const response = await request(server).post('/libros').set('Authorization', `Bearer ${token}`).send(libro);
+    const status = response.statusCode;
+      expect(status).toBe(200);            
+  });
+
 });

@@ -342,7 +342,7 @@ const traerRol = async (email) => {
     const consulta = "SELECT id_rol FROM usuarios WHERE email = $1";
     values = [email]
     const { rows } = await pool.query(consulta, values);
-    console.log("roles encontrados - ok");
+    console.log("rol encontrado - ok");
     return rows[0].id_rol;
     
   } catch (error) {

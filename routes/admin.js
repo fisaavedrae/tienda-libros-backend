@@ -20,7 +20,7 @@ const {
 
 
 // CRUD admin
-router_admin.get("/libros", validarAdmin, getLibrosController);
+router_admin.get("/libros", getLibrosController);
 router_admin.post("/libros", validarAdmin, postLibroMiddleware, postLibroController);
 router_admin.put("/libros/:id",validarAdmin, putLibroMiddleware, putLibroController);
 router_admin.delete("/libros/:id",validarAdmin, deleteLibroMiddleware, deleteLibroController);

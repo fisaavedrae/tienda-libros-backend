@@ -16,7 +16,7 @@ const validarAdmin = async (req, res, next) => {
     //console.log(email);
     try {
       const rol = await traerRol(email);
-      console.log(rol);
+      //console.log(rol);
       if (rol != 2){
         return res.status(400).json({
           status: "Bad Request",
