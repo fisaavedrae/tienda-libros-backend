@@ -30,7 +30,7 @@ describe("Operaciones de Tienda de Libros", () => {
     // Prueba que la ruta POST /registro agrega un nuevo usuario y devuelve un código 201.
     const usuario = {
       nombre: "Manu Chao",
-      email: "manu@chao.com",
+      email: "manu@chao.net",
       password: "1234",
       direccion: "Calle falsa 123",
       ciudad: "Puerto Montt",
